@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Restoran{% endblock %}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d35400;
+            --primary-dark: #a84300;
+            --dark: #1e1e1e;
+            --bg: #faf7f2;
+            --card: #ffffff;
+            --success: #27ae60;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: #333;
+        }
+        h1, h2, h3, .logo { font-family: 'Playfair Display', serif; }
+
+        .navbar {
+            background: var(--dark);
+            padding: 18px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+        .navbar .logo {
+            color: #fff;
+            font-size: 24px;
+            font-weight: 700;
+            text-decoration: none;
+        }
+        .navbar .links {
+            display: flex;
+            align-items: center;
+        }
+        .navbar .links a {
+            color: #ccc;
+            text-decoration: none;
+            margin-left: 24px;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        .navbar .links a:hover { color: var(--primary); }
+
+        .logout-form { display: inline; margin-left: 24px; }
+        .logout-btn {
+            background: none;
+            border: none;
+            color: #ccc;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            padding: 0;
+            transition: color 0.2s;
+        }
+        .logout-btn:hover { color: var(--primary); }
+
+        .content { min-height: 80vh; }
+
+        footer {
+            background: var(--dark);
+            color: #999;
+            text-align: center;
+            padding: 24px;
+            font-size: 13px;
+            margin-top: 60px;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 12px 28px;
+            border: none;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-2px); }
+        .btn-success { background: var(--success); }
+        .btn-success:hover { background: #1e8449; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="{% url 'menu_list' %}" class="logo">🍽️ Zavq Restoran</a>
+        <div class="links">
+            <a href="{% url 'menu_list' %}">Menyu</a>
+            <a href="{% url 'cart' %}">🛒 Savatim</a>
+            <a href="{% url 'my_orders' %}">📦 Buyurtmalarim</a>
+            {% if user.is_authenticated %}
+
+                <form method="POST" action="{% url 'logout' %}" class="logout-form">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">🚪 Chiqish ({{ user.username }})</button>
+                </form>
+            {% else %}
+                <a href="{% url 'login' %}">🔐 Kirish</a>
+                <a href="{% url 'register' %}">📝 Ro'yxatdan o'tish</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <footer>
+        © 2026 Zavq Restoran — barcha huquqlar himoyalangan
+    </footer>
+</body>
+</html>
+
+
+

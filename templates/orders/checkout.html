@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Tasdiqlash{% endblock %}
+
+{% block content %}
+<style>
+    .checkout-box {
+        background: var(--card);
+        max-width: 420px;
+        margin: 60px auto;
+        padding: 40px;
+        border-radius: 16px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    }
+    .checkout-box h1 {
+        text-align: center;
+        font-size: 26px;
+        margin-bottom: 24px;
+        color: var(--dark);
+    }
+    .item-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+        font-size: 14px;
+        color: #555;
+    }
+    .total {
+        display: flex;
+        justify-content: space-between;
+        font-size: 19px;
+        font-weight: 700;
+        color: var(--primary);
+        margin: 20px 0;
+    }
+    .checkout-box button { width: 100%; padding: 15px; font-size: 16px; }
+</style>
+
+<div class="checkout-box">
+    <h1>✅ Buyurtmani tasdiqlash</h1>
+
+    {% for item in cart.items.all %}
+        <div class="item-row">
+            <span>{{ item.menu_item.name }} x{{ item.quantity }}</span>
+            <span>{{ item.subtotal }} so'm</span>
+        </div>
+    {% endfor %}
+
+    <div class="total">
+        <span>Jami</span>
+        <span>{{ cart.total_price }} so'm</span>
+    </div>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success">Ha, buyurtmani tasdiqlayman</button>
+    </form>
+</div>
+{% endblock %}

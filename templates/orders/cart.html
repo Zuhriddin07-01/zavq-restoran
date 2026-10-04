@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+
+{% block title %}Savatim{% endblock %}
+
+{% block content %}
+<style>
+    .section { max-width: 750px; margin: 0 auto; padding: 50px 20px; }
+    .page-title {
+        font-size: 30px;
+        color: var(--dark);
+        margin-bottom: 30px;
+    }
+    .cart-item {
+        background: var(--card);
+        border-radius: 14px;
+        padding: 18px 22px;
+        margin-bottom: 14px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+    }
+    .item-name { font-weight: 600; color: var(--dark); font-size: 16px; }
+    .item-qty-text { color: #999; font-size: 13px; margin-top: 4px; }
+    .item-right {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+    }
+    .qty-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--bg);
+        border-radius: 20px;
+        padding: 4px 8px;
+    }
+    .qty-control a {
+        width: 26px;
+        height: 26px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--primary);
+        color: white;
+        border-radius: 50%;
+        text-decoration: none;
+        font-weight: 700;
+        font-size: 14px;
+    }
+    .qty-control a:hover { background: var(--primary-dark); }
+    .qty-number { font-weight: 700; color: var(--dark); min-width: 18px; text-align: center; }
+    .item-subtotal { font-weight: 700; color: var(--primary); font-size: 17px; min-width: 90px; text-align: right; }
+    .remove-link {
+        color: #c0392b;
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    .remove-link:hover { text-decoration: underline; }
+    .total-box {
+        background: var(--dark);
+        color: white;
+        border-radius: 14px;
+        padding: 22px;
+        margin-top: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 20px;
+        font-weight: 700;
+    }
+    .checkout-btn {
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin-top: 20px;
+        padding: 16px;
+        font-size: 16px;
+    }
+    .empty-box {
+        text-align: center;
+        color: #999;
+        padding: 80px 0;
+        font-size: 17px;
+    }
+    .empty-box a { color: var(--primary); font-weight: 600; text-decoration: none; }
+</style>
+
+<div class="section">
+    <h1 class="page-title">🛒 Mening savatim</h1>
+
+    {% if cart and cart.items.all %}
+        {% for item in cart.items.all %}
+            <div class="cart-item">
+                <div>
+                    <div class="item-name">{{ item.menu_item.name }}</div>
+                    <div class="item-qty-text">{{ item.price_at_order }} so'm / dona</div>
+                </div>
+                <div class="item-right">
+                    <div class="qty-control">
+                        <a href="{% url 'update_cart_item' item.id 'decrease' %}">−</a>
+                        <span class="qty-number">{{ item.quantity }}</span>
+                        <a href="{% url 'update_cart_item' item.id 'increase' %}">+</a>
+                    </div>
+                    <div class="item-subtotal">{{ item.subtotal }} so'm</div>
+                    <a href="{% url 'remove_from_cart' item.id %}" class="remove-link">✕</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        <div class="total-box">
+            <span>Jami</span>
+            <span>{{ cart.total_price }} so'm</span>
+        </div>
+
+        <a href="{% url 'checkout' %}" class="btn btn-success checkout-btn">✅ Buyurtmani tasdiqlash</a>
+    {% else %}
+        <div class="empty-box">
+            Savatingiz bo'sh. <a href="{% url 'menu_list' %}">Menyuga o'ting →</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+
+
+
+
+
+

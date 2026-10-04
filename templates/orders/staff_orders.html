@@ -1,0 +1,92 @@
+{% extends 'staff_base.html' %}
+
+{% block title %}Buyurtmalarni boshqarish{% endblock %}
+
+{% block content %}
+<style>
+    .section { max-width: 850px; margin: 0 auto; padding: 40px 20px; }
+    .page-title { font-size: 26px; color: var(--dark); margin-bottom: 24px; }
+    .order-box {
+        background: var(--card);
+        border-radius: 12px;
+        padding: 22px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        border-left: 5px solid var(--primary);
+    }
+    .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .order-id { font-weight: 700; color: var(--dark); font-size: 16px; }
+    .order-meta { font-size: 13px; color: #999; margin-top: 4px; }
+    .order-item { display: flex; justify-content: space-between; padding: 6px 0; font-size: 14px; color: #666; }
+    .order-total { text-align: right; font-weight: 700; margin-top: 10px; color: var(--primary); }
+    .status-badge {
+        padding: 5px 14px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+    .status-confirmed { background: #d4edda; color: #155724; }
+    .status-preparing { background: #fff3cd; color: #856404; }
+    .status-on_the_way { background: #cce5ff; color: #004085; }
+    .status-delivered { background: #d1ecf1; color: #0c5460; }
+    .status-cancelled { background: #f8d7da; color: #721c24; }
+    .status-form { display: flex; gap: 10px; align-items: center; margin-top: 16px; }
+    .status-form select {
+        padding: 8px 12px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        font-family: inherit;
+        font-size: 14px;
+    }
+    .empty-box { text-align: center; color: #999; padding: 60px 0; font-size: 16px; }
+</style>
+
+<div class="section">
+    <h1 class="page-title">📋 Faol buyurtmalar</h1>
+
+    {% for order in orders %}
+        <div class="order-box">
+            <div class="order-header">
+                <div>
+                    <span class="order-id">Buyurtma #{{ order.id }}</span>
+                    <div class="order-meta">{{ order.user.username }} — {{ order.delivery_address }} — {{ order.phone_number }}</div>
+                </div>
+                <span class="status-badge status-{{ order.status }}">{{ order.get_status_display }}</span>
+            </div>
+
+            {% for item in order.items.all %}
+                <div class="order-item">
+                    <span>{{ item.menu_item.name }} x{{ item.quantity }}</span>
+                    <span>{{ item.subtotal }} so'm</span>
+                </div>
+            {% endfor %}
+
+            <div class="order-total">Jami: {{ order.total_price }} so'm</div>
+
+            <form method="POST" action="{% url 'update_order_status' order.id %}" class="status-form">
+                {% csrf_token %}
+                <select name="status">
+                    <option value="confirmed" {% if order.status == 'confirmed' %}selected{% endif %}>Tasdiqlandi</option>
+                    <option value="preparing" {% if order.status == 'preparing' %}selected{% endif %}>Tayyorlanmoqda</option>
+                    <option value="on_the_way" {% if order.status == 'on_the_way' %}selected{% endif %}>Yo'lda</option>
+                    <option value="delivered" {% if order.status == 'delivered' %}selected{% endif %}>Yetkazildi</option>
+                    <option value="cancelled" {% if order.status == 'cancelled' %}selected{% endif %}>Bekor qilindi</option>
+                </select>
+                <button type="submit" class="btn">Yangilash</button>
+            </form>
+        </div>
+    {% empty %}
+        <div class="empty-box">Hozircha faol buyurtmalar yo'q.</div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
